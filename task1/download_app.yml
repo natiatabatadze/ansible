@@ -1,0 +1,10 @@
+---
+- name: Download Node.js app from Git
+  hosts: all
+  become: yes
+  tasks:
+    - name: Clone the Git repository
+      git:
+        repo: https://github.com/fropa/nodejs-hello.git
+        dest: /path/to/your/app
+

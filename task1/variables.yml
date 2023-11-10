@@ -1,0 +1,5 @@
+---
+your_app_name: "your-app-name"
+app_folder_path: "/path/to/your/app"
+nginx_config_path: "/etc/nginx/conf.d/your-app.conf"
+

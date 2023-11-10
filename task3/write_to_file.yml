@@ -1,0 +1,10 @@
+---
+- name: Write to index.html file
+  hosts: all
+  become: yes
+  tasks:
+    - name: Write content to index.html
+      lineinfile:
+        path: /usr/share/testpage/index.html
+        line: "IP Address of this server is = {{ ansible_default_ipv4.address }}"
+

@@ -1,0 +1,14 @@
+---
+- name: Create /opt/backup directory
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create backup directory
+      file:
+        path: /opt/backup
+        state: directory
+        owner: upload
+        group: upload
+        mode: '0664'
+
+

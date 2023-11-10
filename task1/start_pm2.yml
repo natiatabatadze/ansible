@@ -1,0 +1,12 @@
+---
+- name: Start Node.js app with PM2
+  hosts: all
+  become: yes
+  tasks:
+    - name: Change directory to the app folder
+      shell: cd /path/to/your/app
+
+    - name: Start the app with PM2
+      shell: pm2 start app.js --name "your-app-name"
+
+

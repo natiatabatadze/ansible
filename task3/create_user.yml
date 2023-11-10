@@ -1,0 +1,10 @@
+---
+- name: Create upload user
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create user with password
+      user:
+        name: upload
+        password: "{{ 'devops' | password_hash('sha512') }}"
+

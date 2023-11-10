@@ -1,0 +1,4 @@
+---
+user_password: "devops"
+backup_directory: "/opt/backup"
+

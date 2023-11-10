@@ -1,0 +1,14 @@
+---
+- name: Install HTTPD, PHP, Git
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install required packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - httpd
+        - php
+        - git
+

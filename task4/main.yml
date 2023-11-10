@@ -1,0 +1,18 @@
+---
+- name: Ping
+  import_playbook: 00-ping.yml
+
+- name: Update
+  import_playbook: 01-update.yml
+
+- name: Download Node
+  import_playbook: 02-download-node.yml
+
+- name: Install Node
+  import_playbook: 03-install-node.yml
+
+- name: Provisioning
+  import_playbook: 04-provisioning.yml
+
+- name: Install Dependencies
+  import_playbook: 05-install-dependencies.yml

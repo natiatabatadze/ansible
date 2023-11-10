@@ -1,0 +1,28 @@
+---
+- name: Install Packages and Configure App
+  hosts: all
+  become: yes
+  roles:
+    - nginx_role
+    - nodejs_role
+    - git_role
+
+- name: Download Node.js app from Git
+  hosts: all
+  become: yes
+  tasks:
+    - name: Clone the Git repository
+      git:
+        repo: https://github.com/fropa/nodejs-hello.git
+        dest: /path/to/your/app
+
+- name: Start Node.js app with PM2
+  hosts: all
+  become: yes
+  tasks:
+    - name: Change directory to the app folder
+      shell: cd /path/to/your/app
+
+    - name: Start the app with PM2
+      shell: pm2 start app.js --name "your-app-name"
+

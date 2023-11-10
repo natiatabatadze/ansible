@@ -1,0 +1,11 @@
+---
+- name: Start HTTPD and ensure it starts on system reboot
+  hosts: all
+  become: yes
+  tasks:
+    - name: Start HTTPD service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+

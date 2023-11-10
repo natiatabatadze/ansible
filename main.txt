@@ -1,0 +1,13 @@
+my_ansible_project/
+│
+├── playbook.yml
+└── roles/
+    ├── nginx_role/
+    │   └── tasks/
+    │       └── main.yml
+    ├── nodejs_role/
+    │   └── tasks/
+    │       └── main.yml
+    └── git_role/
+        └── tasks/
+            └── main.yml

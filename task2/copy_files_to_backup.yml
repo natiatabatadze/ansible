@@ -1,0 +1,21 @@
+---
+- name: Copy files to /opt/backup directory
+  hosts: node
+  become: yes
+  tasks:
+    - name: Copy /etc/localtime file
+      copy:
+        src: /etc/localtime
+        dest: /opt/backup/localtime
+        owner: upload
+        group: upload
+        mode: '0664'
+
+    - name: Copy /etc/hosts file
+      copy:
+        src: /etc/hosts
+        dest: /opt/backup/hosts
+        owner: upload
+        group: upload
+        mode: '0664'
+
