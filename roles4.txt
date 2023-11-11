@@ -1,0 +1,109 @@
+my_ansible_project/
+│
+├── playbook.yml
+└── roles/
+    ├── common/
+    │   └── tasks/
+    │       └── main.yml
+    ├── nginx_role/
+    │   └── tasks/
+    │       └── main.yml
+    ├── nodejs_role/
+    │   └── tasks/
+    │       └── main.yml
+    ├── git_role/
+    │   └── tasks/
+    │       └── main.yml
+    ├── pm2_role/
+    │   └── tasks/
+    │       └── main.yml
+    └── copy_file_role/
+        └── tasks/
+            └── main.yml
+common/tasks/main.yml:
+
+yaml
+Copy code
+---
+- name: Install basic packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - epel-release
+    - git
+nginx_role/tasks/main.yml:
+
+yaml
+Copy code
+---
+- name: Install Nginx
+  yum:
+    name: nginx
+    state: present
+nodejs_role/tasks/main.yml:
+
+yaml
+Copy code
+---
+- name: Install Node.js
+  yum:
+    name: nodejs
+    state: present
+git_role/tasks/main.yml:
+
+yaml
+Copy code
+---
+- name: Install Git
+  yum:
+    name: git
+    state: present
+pm2_role/tasks/main.yml:
+
+yaml
+Copy code
+---
+- name: Install PM2
+  shell: npm install -g pm2
+copy_file_role/tasks/main.yml:
+
+yaml
+Copy code
+---
+- name: Copy package.json
+  copy:
+    src: /home/devops/meotxe/package.json
+    dest: /home/devops/meotxe/package.json
+Now, your main playbook (playbook.yml) can reference these roles:
+
+yaml
+Copy code
+---
+- name: Full Deployment
+  hosts: servers
+  become: yes
+  roles:
+    - common
+    - nginx_role
+    - nodejs_role
+    - git_role
+    - pm2_role
+    - copy_file_role
+
+- name: Install dependencies and start application with PM2
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Install dependencies
+      shell: npm install
+      args:
+        chdir: /home/devops/meotxe
+
+    - name: Start application with PM2
+      shell: /usr/local/bin/pm2 start /home/devops/meotxe/app.js --name application 
+-i 1 --watch
+      args:
+        chdir: /home/devops/meotxe
+Ensure you replace "/home/devops/meotxe" with the actual path in your playbook and 
+customize it according to your needs.

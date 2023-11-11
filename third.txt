@@ -1,0 +1,51 @@
+---
+- name: Third Task
+  hosts: servers
+  become: yes
+  vars:
+    packages_to_install:
+      - httpd
+      - php
+      - vim
+      - mlocate
+
+  tasks:
+  - name: Install httpd, php, mlocate, vim
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop: "{{ packages_to_install }}"
+
+  - name: Start and enable Apache
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: Get IP
+    set_fact:
+      worker_ip: "{{ ansible_host | default(inventory_hostname) }}"
+
+  - name: Print Worker IP
+    debug:
+      var: worker_ip
+
+  - name: update target index.html on worker
+    lineinfile:
+      path: /usr/share/testpage/index.html
+      regexp: '^<p> IP address: '
+      line: '{{ worker_ip }} </p>'
+    notify: Restart Apache
+
+  - name: update custom index.html
+    lineinfile:
+      path: /var/www/html/index.html
+      line: '<p> {{ worker_ip }} </p>'
+    notify: Restart Apache
+
+  handlers:
+  - name: Restart Apache
+    service:
+      name: httpd
+      state: restarted
+    listen: Restart Apache

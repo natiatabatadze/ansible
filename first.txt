@@ -1,0 +1,84 @@
+first.yml
+---
+- name: Install Nginx, Node.js, PM2, and Git on Red Hat-based systems
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Update yum packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Install Node.js
+      yum:
+        name: nodejs
+        state: present
+
+    - name: Install npm
+      yum:
+        name: npm
+        state: present
+
+    - name: Install PM2 globally
+      shell: npm install -g pm2
+
+    - name: Install Git
+      yum:
+        name: git
+        state: present
+
+---
+აქედან მეორე ფაილი უნდა გაუშვა
+მე firstsecond.yml დავარქვი
+მაგრამ ფოლდერებს მიაქციე ყურადღება pm2 მა შეიძლება არ იმუშაოს, კიდევ პაკაჯ ჯეისონ 
+ფაილი უნდა და დააგენერირებინე 
+
+- name: Deploy Node.js Application with Nginx Reverse Proxy
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Clone Node.js project from GitHub
+      git:
+        repo: https://github.com/fropa/nodejs-hello.git
+        dest: /home/devops/application
+        version: main
+
+    - name: Copy package.json file
+      copy:
+        src: package.json
+        dest: /home/devops/application
+
+    - name: Install Node.js dependencies
+      shell: npm install
+      args:
+        chdir: /home/devops/application
+
+    - name: Start Node.js application with PM2
+      shell: /usr/local/bin/pm2 start /home/devops/application/app.js -n nodejs-hello 
+-f
+
+    - name: Make sites-available folder
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+
+
+    - name: Configure Nginx reverse proxy
+      template:
+        src: ngnix.conf
+        dest: /etc/nginx/sites-available/nodejs-hello
+      notify:
+        - Reload Nginx
+
+  handlers:
+    - name: Reload Nginx
+      systemd:
+        name: nginx
+        state: reloaded

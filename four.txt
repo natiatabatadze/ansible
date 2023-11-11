@@ -1,0 +1,46 @@
+პმ2 აჩმახებს
+---
+- name: Fourth Task
+  hosts: servers
+  become: yes
+  vars:
+    packages_to_install:
+     - nginx
+     - nodejs
+     - npm
+     - git
+
+
+  tasks:
+  - name: install nginx, nodejs, git
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ packages_to_install }}"
+
+  - name: get git repo
+    git:
+      repo: https://github.com/fropa/nodejs-hello.git
+      dest: /home/devops/meotxe
+
+  - name: install PM2
+    shell: npm install -g pm2
+
+  - name: copy package json
+    copy:
+      src: /home/devops/meotxe/package.json
+      dest: /home/devops/meotxe/package.json
+
+  - name: install dependencies
+    shell: npm install
+    args:
+      chdir: /home/devops/meotxe
+
+
+  - name: start application with pm2
+    shell: /usr/local/bin/pm2 start /home/devops/meotxe/app.js --name applicaion -i 1 
+--watch
+    args:
+      chdir: /home/devops/meotxe
+
+როლებად დაშლა ჩატს გააკეთებინე

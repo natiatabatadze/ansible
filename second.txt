@@ -1,0 +1,51 @@
+ეს ადვილია შედარებით და პრობლემა არ უნდა შექმნას
+--
+- name: Install httpd, php, git
+  hosts: servers
+  become: true
+  vars:
+    username: upload
+    password: devops
+    dirpath: /opt/upload
+    dest1: /etc/localtime
+    dest2: /etc/hosts
+
+  tasks:
+    - name: Install required packages
+      yum:
+        name: "{{item}}"
+        state: present
+      loop:
+        - httpd
+        - php
+        - git
+
+    - name: Create user
+      user:
+        name: "{{ username }}"
+        password: "{{ password | password_hash('sha512') }}"
+        system: yes
+
+    - name: Make directory
+      file:
+        path: "{{ dirpath }}"
+        state: directory
+
+    - name: Change owner
+      file:
+        path: "{{ dirpath }}"
+        owner: "{{ username }}"
+        state: directory
+        recurse: yes
+    - name: Change mode
+      file:
+        path: "{{ dirpath }}"
+        mode: 664
+ - name: Copy files
+      copy:
+         src: "{{ item }}"
+         dest: "{{ dirpath }}"
+         remote_src: yes
+      loop:
+         - "{{ dest1 }}"
+         - "{{ dest2 }}"
